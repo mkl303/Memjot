@@ -3,11 +3,19 @@ import { prisma } from "@/lib/prisma";
 
 type Ctx = { params: { id: string } };
 
-export async function GET(_req: NextRequest, { params }: Ctx) {
+function getSessionId(req: NextRequest): string {
+  return req.headers.get("x-session-id") ?? "";
+}
+
+async function findOwnedDoc(id: string, sessionId: string) {
+  if (!sessionId) return null;
+  return prisma.document.findFirst({ where: { id, sessionId } });
+}
+
+export async function GET(req: NextRequest, { params }: Ctx) {
   try {
-    const document = await prisma.document.findUnique({
-      where: { id: params.id },
-    });
+    const sessionId = getSessionId(req);
+    const document = await findOwnedDoc(params.id, sessionId);
     if (!document) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -23,6 +31,12 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
 
 export async function PATCH(req: NextRequest, { params }: Ctx) {
   try {
+    const sessionId = getSessionId(req);
+    const existing = await findOwnedDoc(params.id, sessionId);
+    if (!existing) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
     const body = await req.json();
     const data: Record<string, unknown> = {};
 
@@ -34,6 +48,12 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
         typeof body.parentDocumentId === "string" &&
         body.parentDocumentId.length > 0
           ? body.parentDocumentId
+          : null;
+    }
+    if (body.category !== undefined) {
+      data.category =
+        typeof body.category === "string" && body.category.length > 0
+          ? body.category
           : null;
     }
 
@@ -52,8 +72,14 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: Ctx) {
+export async function DELETE(req: NextRequest, { params }: Ctx) {
   try {
+    const sessionId = getSessionId(req);
+    const existing = await findOwnedDoc(params.id, sessionId);
+    if (!existing) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
     await prisma.document.delete({
       where: { id: params.id },
     });

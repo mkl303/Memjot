@@ -1,15 +1,19 @@
 "use client";
 
+import { useRef } from "react";
 import {
   ChevronLeft,
   ChevronRight,
+  Download,
   FileText,
   Plus,
   Search,
+  Upload,
 } from "lucide-react";
 import { DocumentTree } from "./DocumentTree";
 import type { Document } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { exportBackup, importBackup } from "@/lib/backup";
 
 interface Props {
   documents: Document[];
@@ -18,6 +22,7 @@ interface Props {
   onCreate: (parentId: string | null) => void;
   isOpen: boolean;
   onToggle: () => void;
+  onChanged: () => void;
 }
 
 export function Sidebar({
@@ -27,7 +32,42 @@ export function Sidebar({
   onCreate,
   isOpen,
   onToggle,
+  onChanged,
 }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleExport = async () => {
+    try {
+      await exportBackup();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to export backup.");
+    }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const count = await importBackup(file);
+      onChanged();
+      window.dispatchEvent(new CustomEvent("documents:changed"));
+      alert(`Imported ${count} page${count === 1 ? "" : "s"}.`);
+    } catch (err) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : "Failed to import backup.");
+    } finally {
+      // Reset so the same file can be picked again.
+      e.target.value = "";
+    }
+  };
+
   return (
     <aside
       className={cn(
@@ -84,6 +124,32 @@ export function Sidebar({
               selectedId={selectedId}
               onSelect={onSelect}
               onCreate={onCreate}
+            />
+          </div>
+
+          <div className="space-y-1 border-t border-gray-200 p-2">
+            <button
+              onClick={handleExport}
+              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200"
+              title="Download a JSON backup of all your pages"
+            >
+              <Download className="h-4 w-4" />
+              <span>Export backup</span>
+            </button>
+            <button
+              onClick={handleImportClick}
+              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200"
+              title="Import a previously exported JSON backup"
+            >
+              <Upload className="h-4 w-4" />
+              <span>Import backup</span>
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={handleFileChange}
             />
           </div>
         </>

@@ -5,16 +5,21 @@ import { Sidebar } from "./Sidebar";
 import { DocumentEditor } from "./DocumentEditor";
 import { EmptyState } from "./EmptyState";
 import type { Document } from "@/lib/types";
+import { apiFetch } from "@/lib/api";
+import { getOrCreateSessionId } from "@/lib/session";
 
 export function AppShell() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
 
   const fetchDocuments = useCallback(async () => {
     try {
-      const res = await fetch("/api/documents", { cache: "no-store" });
+      // Ensure the session id exists before the first request.
+      getOrCreateSessionId();
+      const res = await apiFetch("/api/documents", { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to fetch");
       const data: Document[] = await res.json();
       setDocuments(data);
@@ -26,10 +31,11 @@ export function AppShell() {
   }, []);
 
   useEffect(() => {
+    setReady(true);
     fetchDocuments();
   }, [fetchDocuments]);
 
-  // Listen for tree-level changes (create/delete) so we can re-sync.
+  // Listen for tree-level changes (create/delete/import) so we can re-sync.
   useEffect(() => {
     const handler = () => {
       fetchDocuments();
@@ -47,9 +53,8 @@ export function AppShell() {
 
   const createDocument = useCallback(
     async (parentDocumentId: string | null = null) => {
-      const res = await fetch("/api/documents", {
+      const res = await apiFetch("/api/documents", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: "Untitled", parentDocumentId }),
       });
       if (!res.ok) return;
@@ -62,6 +67,10 @@ export function AppShell() {
 
   const selected = documents.find((d) => d.id === selectedId) ?? null;
 
+  if (!ready) {
+    return null;
+  }
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-white">
       <Sidebar
@@ -71,6 +80,7 @@ export function AppShell() {
         onCreate={createDocument}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen((v) => !v)}
+        onChanged={fetchDocuments}
       />
       <main className="relative flex-1 overflow-hidden">
         {loading ? (

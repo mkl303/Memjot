@@ -3,7 +3,9 @@ export interface Document {
   title: string;
   content: string;
   isPublished: boolean;
+  category: string | null;
   parentDocumentId: string | null;
+  sessionId?: string;
   createdAt: string;
   updatedAt: string;
 }

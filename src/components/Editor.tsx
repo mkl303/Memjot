@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import Image from "@tiptap/extension-image";
 import {
   Bold,
   Code,
   Heading1,
   Heading2,
+  Image as ImageIcon,
   Italic,
   List,
   ListOrdered,
@@ -23,6 +25,8 @@ interface Props {
 }
 
 export function Editor({ value, onChange }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -30,6 +34,10 @@ export function Editor({ value, onChange }: Props) {
       }),
       Placeholder.configure({
         placeholder: "Type '/' for commands, or just start writing…",
+      }),
+      Image.configure({
+        inline: false,
+        allowBase64: true,
       }),
     ],
     content: value || "",
@@ -52,6 +60,27 @@ export function Editor({ value, onChange }: Props) {
       editor.commands.setContent(value || "", false);
     }
   }, [value, editor]);
+
+  const handleFileSelect = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file || !editor) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      if (typeof dataUrl === "string") {
+        editor
+          .chain()
+          .focus()
+          .setImage({ src: dataUrl, alt: file.name })
+          .run();
+      }
+    };
+    reader.readAsDataURL(file);
+    // Reset so the same file can be picked again.
+    e.target.value = "";
+  };
 
   if (!editor) {
     return <div className="h-[400px] animate-pulse rounded bg-gray-50" />;
@@ -117,6 +146,12 @@ export function Editor({ value, onChange }: Props) {
       run: () => editor.chain().focus().toggleBlockquote().run(),
       active: editor.isActive("blockquote"),
     },
+    {
+      icon: ImageIcon,
+      label: "Insert image",
+      run: () => fileInputRef.current?.click(),
+      active: false,
+    },
   ];
 
   return (
@@ -136,6 +171,13 @@ export function Editor({ value, onChange }: Props) {
             <t.icon className="h-4 w-4" />
           </button>
         ))}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileSelect}
+        />
       </div>
       <EditorContent editor={editor} />
     </div>

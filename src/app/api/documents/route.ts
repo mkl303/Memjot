@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+function getSessionId(req: NextRequest): string {
+  return req.headers.get("x-session-id") ?? "";
+}
+
+export async function GET(req: NextRequest) {
   try {
+    const sessionId = getSessionId(req);
+    if (!sessionId) {
+      // No session yet (shouldn't happen with the client wrapper,
+      // but stay safe). Return an empty list rather than leaking
+      // other users' data.
+      return NextResponse.json([]);
+    }
     const documents = await prisma.document.findMany({
+      where: { sessionId },
       orderBy: { updatedAt: "desc" },
     });
     return NextResponse.json(documents);
@@ -18,8 +30,17 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const sessionId = getSessionId(req);
+    if (!sessionId) {
+      return NextResponse.json(
+        { error: "Missing session id" },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
-    const { title, content, parentDocumentId, isPublished } = body ?? {};
+    const { title, content, parentDocumentId, isPublished, category } =
+      body ?? {};
 
     const document = await prisma.document.create({
       data: {
@@ -27,10 +48,16 @@ export async function POST(req: NextRequest) {
           typeof title === "string" && title.length > 0 ? title : "Untitled",
         content: typeof content === "string" ? content : "",
         parentDocumentId:
-          typeof parentDocumentId === "string" && parentDocumentId.length > 0
+          typeof parentDocumentId === "string" &&
+          parentDocumentId.length > 0
             ? parentDocumentId
             : null,
         isPublished: Boolean(isPublished),
+        category:
+          typeof category === "string" && category.length > 0
+            ? category
+            : null,
+        sessionId,
       },
     });
 

@@ -12,6 +12,8 @@ model Document {
   title            String     @default("Untitled")
   content          String     @default("")
   isPublished      Boolean    @default(false)
+  category         String?
+  sessionId        String
   parentDocumentId String?
   parentDocument   Document?  @relation("DocumentHierarchy", fields: [parentDocumentId], references: [id], onDelete: Cascade)
   childDocuments   Document[] @relation("DocumentHierarchy")
@@ -19,4 +21,5 @@ model Document {
   updatedAt        DateTime   @updatedAt
 
   @@index([parentDocumentId])
+  @@index([sessionId])
 }

@@ -1,0 +1,194 @@
+
+# 2026-06-13 22:50:45.569916
++Sen uzman bir Full-Stack Geliştiricisin. Hedefimiz, modern ve ölçeklenebilir bir web teknolojisi yığını kullanarak bir Notion klonu MVP'si (Minimum Viable Product) inşa etmek. Lütfen kodu yazmadan önce mimariyi düşün ve dosyaları modüler bir şekilde oluştur.
++
++**Kullanılacak Teknoloji Yığını:**
++* **Framework:** Next.js (App Router) ile React
++* **Dil:** TypeScript
++* **Stil:** Tailwind CSS ve Lucide-React (ikonlar için)
++* **Veritabanı ve ORM:** Prisma ve yerel SQLite (geliştirme kolaylığı için)
++* **Editör:** TipTap (veya BlockNote - blok tabanlı zengin metin editörü için)
++
++**Veritabanı Şeması (Prisma):**
++Öncelikle `prisma/schema.prisma` dosyasını oluştur ve aşağıdaki ilişkiye sahip bir `Document` (veya Page) modeli kur:
++* `id` (String, UUID)
++* `title` (String)
++* `content` (String/JSON - editör içeriği için)
++* `isPublished` (Boolean, default false)
++* `parentDocumentId` (String, nullable - iç içe sayfalar (nested pages) için kendi kendine referans veren ilişki)
++* `createdAt` ve `updatedAt`
++
++**Aşama 1 - Temel Hedefler (Şu an yapman gerekenler):**
++1.  **Veritabanı Kurulumu:** Prisma şemasını oluştur ve SQLite veritabanını başlat (`npx prisma db push` işleminin yapılabilir olduğunu varsay).
++2.  **Layout ve UI İskeleti:** Tüm uygulamayı kapsayan ana bir düzen (layout) oluştur. 
++    * **Sol Kenar Çubuğu (Sidebar):** Daraltılabilir (collapsible) olmalı. İçerisinde mevcut dokümanların ağaç yapısında (hiyerarşik) listesi ve "Yeni Doküman Ekle" butonu bulunmalı.
++    * **Ana İçerik Alanı:** Seçilen dokümanın başlığının (`h1` büyüklüğünde) ve altında editörün yer alacağı boş bir tuval alanı.
++3.  **Temel API Route'ları:** Next.js App Router standartlarına uygun olarak doküman oluşturma (POST), listeleme (GET), getirme (GET /id), güncelleme (PATCH) ve silme (DELETE) işlemlerini yapacak API uçlarını (endpoints) yaz.
++4.  **Editör Entegrasyonu:** Ana içerik alanına basit bir TipTap (veya seçtiğin blok editör) entegre et. İçerik değiştiğinde otomatik kaydetme (auto-save) veya bir "Kaydet" butonu mantığı için temel bir debounce fonksiyonu hazırla.
++
++Lütfen bu mimariyi tek seferde, eksiksiz ve çalışır bir kod tabanı olarak adım adım inşa et. İlk olarak Prisma şemasını ve klasör yapısını kurarak başla.
+
+# 2026-06-13 22:50:45.570001
++Sen uzman bir Full-Stack Geliştiricisin. Hedefimiz, modern ve ölçeklenebilir bir web teknolojisi yığını kullanarak bir Notion klonu MVP'si (Minimum Viable Product) inşa etmek. Lütfen kodu yazmadan önce mimariyi düşün ve dosyaları modüler bir şekilde oluştur.
++
++**Kullanılacak Teknoloji Yığını:**
++* **Framework:** Next.js (App Router) ile React
++* **Dil:** TypeScript
++* **Stil:** Tailwind CSS ve Lucide-React (ikonlar için)
++* **Veritabanı ve ORM:** Prisma ve yerel SQLite (geliştirme kolaylığı için)
++* **Editör:** TipTap (veya BlockNote - blok tabanlı zengin metin editörü için)
++
++**Veritabanı Şeması (Prisma):**
++Öncelikle `prisma/schema.prisma` dosyasını oluştur ve aşağıdaki ilişkiye sahip bir `Document` (veya Page) modeli kur:
++* `id` (String, UUID)
++* `title` (String)
++* `content` (String/JSON - editör içeriği için)
++* `isPublished` (Boolean, default false)
++* `parentDocumentId` (String, nullable - iç içe sayfalar (nested pages) için kendi kendine referans veren ilişki)
++* `createdAt` ve `updatedAt`
++
++**Aşama 1 - Temel Hedefler (Şu an yapman gerekenler):**
++1.  **Veritabanı Kurulumu:** Prisma şemasını oluştur ve SQLite veritabanını başlat (`npx prisma db push` işleminin yapılabilir olduğunu varsay).
++2.  **Layout ve UI İskeleti:** Tüm uygulamayı kapsayan ana bir düzen (layout) oluştur. 
++    * **Sol Kenar Çubuğu (Sidebar):** Daraltılabilir (collapsible) olmalı. İçerisinde mevcut dokümanların ağaç yapısında (hiyerarşik) listesi ve "Yeni Doküman Ekle" butonu bulunmalı.
++    * **Ana İçerik Alanı:** Seçilen dokümanın başlığının (`h1` büyüklüğünde) ve altında editörün yer alacağı boş bir tuval alanı.
++3.  **Temel API Route'ları:** Next.js App Router standartlarına uygun olarak doküman oluşturma (POST), listeleme (GET), getirme (GET /id), güncelleme (PATCH) ve silme (DELETE) işlemlerini yapacak API uçlarını (endpoints) yaz.
++4.  **Editör Entegrasyonu:** Ana içerik alanına basit bir TipTap (veya seçtiğin blok editör) entegre et. İçerik değiştiğinde otomatik kaydetme (auto-save) veya bir "Kaydet" butonu mantığı için temel bir debounce fonksiyonu hazırla.
++
++Lütfen bu mimariyi tek seferde, eksiksiz ve çalışır bir kod tabanı olarak adım adım inşa et. İlk olarak Prisma şemasını ve klasör yapısını kurarak başla.
+
+# 2026-06-13 22:52:54.080488
++Sen uzman bir Full-Stack Geliştiricisin. Hedefimiz, modern ve ölçeklenebilir bir web teknolojisi yığını kullanarak bir Notion klonu MVP'si (Minimum Viable Product) inşa etmek. Lütfen kodu yazmadan önce mimariyi düşün ve dosyaları modüler bir şekilde oluştur.
++
++**Kullanılacak Teknoloji Yığını:**
++* **Framework:** Next.js (App Router) ile React
++* **Dil:** TypeScript
++* **Stil:** Tailwind CSS ve Lucide-React (ikonlar için)
++* **Veritabanı ve ORM:** Prisma ve yerel SQLite (geliştirme kolaylığı için)
++* **Editör:** TipTap (veya BlockNote - blok tabanlı zengin metin editörü için)
++
++**Veritabanı Şeması (Prisma):**
++Öncelikle `prisma/schema.prisma` dosyasını oluştur ve aşağıdaki ilişkiye sahip bir `Document` (veya Page) modeli kur:
++* `id` (String, UUID)
++* `title` (String)
++* `content` (String/JSON - editör içeriği için)
++* `isPublished` (Boolean, default false)
++* `parentDocumentId` (String, nullable - iç içe sayfalar (nested pages) için kendi kendine referans veren ilişki)
++* `createdAt` ve `updatedAt`
++
++**Aşama 1 - Temel Hedefler (Şu an yapman gerekenler):**
++1.  **Veritabanı Kurulumu:** Prisma şemasını oluştur ve SQLite veritabanını başlat (`npx prisma db push` işleminin yapılabilir olduğunu varsay).
++2.  **Layout ve UI İskeleti:** Tüm uygulamayı kapsayan ana bir düzen (layout) oluştur. 
++    * **Sol Kenar Çubuğu (Sidebar):** Daraltılabilir (collapsible) olmalı. İçerisinde mevcut dokümanların ağaç yapısında (hiyerarşik) listesi ve "Yeni Doküman Ekle" butonu bulunmalı.
++    * **Ana İçerik Alanı:** Seçilen dokümanın başlığının (`h1` büyüklüğünde) ve altında editörün yer alacağı boş bir tuval alanı.
++3.  **Temel API Route'ları:** Next.js App Router standartlarına uygun olarak doküman oluşturma (POST), listeleme (GET), getirme (GET /id), güncelleme (PATCH) ve silme (DELETE) işlemlerini yapacak API uçlarını (endpoints) yaz.
++4.  **Editör Entegrasyonu:** Ana içerik alanına basit bir TipTap (veya seçtiğin blok editör) entegre et. İçerik değiştiğinde otomatik kaydetme (auto-save) veya bir "Kaydet" butonu mantığı için temel bir debounce fonksiyonu hazırla.
++
++Lütfen bu mimariyi tek seferde, eksiksiz ve çalışır bir kod tabanı olarak adım adım inşa et. İlk olarak Prisma şemasını ve klasör yapısını kurarak başla.
+
+# 2026-06-13 22:52:54.080627
++Sen uzman bir Full-Stack Geliştiricisin. Hedefimiz, modern ve ölçeklenebilir bir web teknolojisi yığını kullanarak bir Notion klonu MVP'si (Minimum Viable Product) inşa etmek. Lütfen kodu yazmadan önce mimariyi düşün ve dosyaları modüler bir şekilde oluştur.
++
++**Kullanılacak Teknoloji Yığını:**
++* **Framework:** Next.js (App Router) ile React
++* **Dil:** TypeScript
++* **Stil:** Tailwind CSS ve Lucide-React (ikonlar için)
++* **Veritabanı ve ORM:** Prisma ve yerel SQLite (geliştirme kolaylığı için)
++* **Editör:** TipTap (veya BlockNote - blok tabanlı zengin metin editörü için)
++
++**Veritabanı Şeması (Prisma):**
++Öncelikle `prisma/schema.prisma` dosyasını oluştur ve aşağıdaki ilişkiye sahip bir `Document` (veya Page) modeli kur:
++* `id` (String, UUID)
++* `title` (String)
++* `content` (String/JSON - editör içeriği için)
++* `isPublished` (Boolean, default false)
++* `parentDocumentId` (String, nullable - iç içe sayfalar (nested pages) için kendi kendine referans veren ilişki)
++* `createdAt` ve `updatedAt`
++
++**Aşama 1 - Temel Hedefler (Şu an yapman gerekenler):**
++1.  **Veritabanı Kurulumu:** Prisma şemasını oluştur ve SQLite veritabanını başlat (`npx prisma db push` işleminin yapılabilir olduğunu varsay).
++2.  **Layout ve UI İskeleti:** Tüm uygulamayı kapsayan ana bir düzen (layout) oluştur. 
++    * **Sol Kenar Çubuğu (Sidebar):** Daraltılabilir (collapsible) olmalı. İçerisinde mevcut dokümanların ağaç yapısında (hiyerarşik) listesi ve "Yeni Doküman Ekle" butonu bulunmalı.
++    * **Ana İçerik Alanı:** Seçilen dokümanın başlığının (`h1` büyüklüğünde) ve altında editörün yer alacağı boş bir tuval alanı.
++3.  **Temel API Route'ları:** Next.js App Router standartlarına uygun olarak doküman oluşturma (POST), listeleme (GET), getirme (GET /id), güncelleme (PATCH) ve silme (DELETE) işlemlerini yapacak API uçlarını (endpoints) yaz.
++4.  **Editör Entegrasyonu:** Ana içerik alanına basit bir TipTap (veya seçtiğin blok editör) entegre et. İçerik değiştiğinde otomatik kaydetme (auto-save) veya bir "Kaydet" butonu mantığı için temel bir debounce fonksiyonu hazırla.
++
++Lütfen bu mimariyi tek seferde, eksiksiz ve çalışır bir kod tabanı olarak adım adım inşa et. İlk olarak Prisma şemasını ve klasör yapısını kurarak başla.
+
+# 2026-06-13 22:59:16.699672
++Anladığını varsayıyorum. Lütfen az önce planladığın Notion klonu kodlarının tamamını, Aider'ın dosya düzenleme formatına (edit format) KESİNLİKLE uyarak baştan yaz ve tüm dosyaları oluştur.
+
+# 2026-06-13 22:59:16.699746
++Anladığını varsayıyorum. Lütfen az önce planladığın Notion klonu kodlarının tamamını, Aider'ın dosya düzenleme formatına (edit format) KESİNLİKLE uyarak baştan yaz ve tüm dosyaları oluştur.
+
+# 2026-06-13 23:03:43.971965
++I am explicitly requesting code changes right now. You failed to create the files in your previous attempts because of format errors. Please output ALL the files for the Notion clone MVP that you just planned (including prisma/schema.prisma, API routes, and UI components) right now. You MUST write the actual code blocks. STRICTLY use the Aider file edit format (bare filename on line 1, then opening ``` on line 2).
+
+# 2026-06-13 23:03:43.972831
++I am explicitly requesting code changes right now. You failed to create the files in your previous attempts because of format errors. Please output ALL the files for the Notion clone MVP that you just planned (including prisma/schema.prisma, API routes, and UI components) right now. You MUST write the actual code blocks. STRICTLY use the Aider file edit format (bare filename on line 1, then opening ``` on line 2).
+
+# 2026-06-13 23:09:39.491320
++I am getting a build error: next/font error: Unknown font 'Geist' in layout.tsx. Please update src/app/layout.tsx (or app/layout.tsx). Remove the Geist font completely and replace it with the Inter font from next/font/google. Apply it to the body className.
+
+# 2026-06-13 23:09:39.491401
++I am getting a build error: next/font error: Unknown font 'Geist' in layout.tsx. Please update src/app/layout.tsx (or app/layout.tsx). Remove the Geist font completely and replace it with the Inter font from next/font/google. Apply it to the body className.
+
+# 2026-06-13 23:12:14.915889
++I am getting a build error: next/font error: Unknown font 'Geist' in layout.tsx. Please update src/app/layout.tsx (or app/layout.tsx). Remove the Geist font completely and replace it with the Inter font from next/font/google. Apply it to the body className.
+
+# 2026-06-13 23:12:14.916136
++I am getting a build error: next/font error: Unknown font 'Geist' in layout.tsx. Please update src/app/layout.tsx (or app/layout.tsx). Remove the Geist font completely and replace it with the Inter font from next/font/google. Apply it to the body className.
+
+# 2026-06-13 23:27:30.673621
++The MVP is working perfectly. Now, I want to upgrade this app for public web deployment. It must remain free and require NO user accounts, but users should only see their own data. I also need export/import, categorization, and image support.
++
++Please implement the following architecture strictly using the correct Aider edit format (bare filename on line 1, ``` on line 2):
++
++1. Anonymous Sessions (No-Login Privacy):
++- Update `prisma/schema.prisma`: Add `sessionId String` to the `Document` model.
++- Frontend: Create a utility or hook that generates a unique UUID on first visit, saves it to `localStorage` (e.g., 'notion_session_id'), and attaches it to all API requests via an `x-session-id` header.
++- API (`/api/documents/...`): Update all GET, POST, PATCH, and DELETE routes to read the `x-session-id` header and filter/mutate ONLY the documents belonging to that sessionId.
++
++2. Export & Import (JSON):
++- Format: JSON (to perfectly preserve TipTap content and nested parent-child structures).
++- UI: Add "Export Backup" and "Import Backup" buttons at the bottom of the Sidebar.
++- Export Logic: Fetch all documents for the current sessionId and trigger a download of `notion-backup.json`.
++- Import Logic: Parse an uploaded JSON file and bulk-create/upsert the documents into the database, assigning them the current browser's `sessionId`.
++
++3. Categorization:
++- Update `prisma/schema.prisma`: Add `category String?` to the `Document` model.
++- UI: Add a simple way in the UI (maybe a dropdown or input below the title) to assign a category to a document. Update the `DocumentTree` or Sidebar to group documents by their categories.
++
++4. Image Support (Base64):
++- Assume I will install `@tiptap/extension-image@2`.
++- Update `Editor.tsx`: Add the Image extension to the TipTap configuration.
++- Add an image upload button to the editor toolbar. When a user selects an image, convert it to a Base64 string and insert it into the TipTap editor. (This avoids external cloud storage costs for a free app).
++
++Execute these changes step-by-step: first the Prisma schema, then the API routes, and finally the UI components.
+
+# 2026-06-13 23:27:30.673716
++The MVP is working perfectly. Now, I want to upgrade this app for public web deployment. It must remain free and require NO user accounts, but users should only see their own data. I also need export/import, categorization, and image support.
++
++Please implement the following architecture strictly using the correct Aider edit format (bare filename on line 1, ``` on line 2):
++
++1. Anonymous Sessions (No-Login Privacy):
++- Update `prisma/schema.prisma`: Add `sessionId String` to the `Document` model.
++- Frontend: Create a utility or hook that generates a unique UUID on first visit, saves it to `localStorage` (e.g., 'notion_session_id'), and attaches it to all API requests via an `x-session-id` header.
++- API (`/api/documents/...`): Update all GET, POST, PATCH, and DELETE routes to read the `x-session-id` header and filter/mutate ONLY the documents belonging to that sessionId.
++
++2. Export & Import (JSON):
++- Format: JSON (to perfectly preserve TipTap content and nested parent-child structures).
++- UI: Add "Export Backup" and "Import Backup" buttons at the bottom of the Sidebar.
++- Export Logic: Fetch all documents for the current sessionId and trigger a download of `notion-backup.json`.
++- Import Logic: Parse an uploaded JSON file and bulk-create/upsert the documents into the database, assigning them the current browser's `sessionId`.
++
++3. Categorization:
++- Update `prisma/schema.prisma`: Add `category String?` to the `Document` model.
++- UI: Add a simple way in the UI (maybe a dropdown or input below the title) to assign a category to a document. Update the `DocumentTree` or Sidebar to group documents by their categories.
++
++4. Image Support (Base64):
++- Assume I will install `@tiptap/extension-image@2`.
++- Update `Editor.tsx`: Add the Image extension to the TipTap configuration.
++- Add an image upload button to the editor toolbar. When a user selects an image, convert it to a Base64 string and insert it into the TipTap editor. (This avoids external cloud storage costs for a free app).
++
++Execute these changes step-by-step: first the Prisma schema, then the API routes, and finally the UI components.

@@ -12,6 +12,7 @@ import {
 import { buildTree } from "@/lib/tree";
 import type { DocumentNode, Document } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 
 interface Props {
   documents: Document[];
@@ -19,6 +20,8 @@ interface Props {
   onSelect: (id: string) => void;
   onCreate: (parentId: string | null) => void;
 }
+
+const UNCATEGORIZED = "Uncategorized";
 
 export function DocumentTree(props: Props) {
   const tree = buildTree(props.documents);
@@ -29,12 +32,37 @@ export function DocumentTree(props: Props) {
     );
   }
 
+  // Group root nodes by category. Sub-pages stay nested under
+  // their parent in the tree regardless of the child's own
+  // category, so the hierarchy is preserved.
+  const groups = new Map<string, DocumentNode[]>();
+  tree.forEach((node) => {
+    const key = node.category ?? UNCATEGORIZED;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(node);
+  });
+
+  const sortedCategories = Array.from(groups.keys()).sort((a, b) => {
+    if (a === UNCATEGORIZED) return 1;
+    if (b === UNCATEGORIZED) return -1;
+    return a.localeCompare(b);
+  });
+
   return (
-    <ul className="space-y-0.5">
-      {tree.map((node) => (
-        <TreeNode key={node.id} node={node} depth={0} {...props} />
+    <div className="space-y-2">
+      {sortedCategories.map((category) => (
+        <div key={category}>
+          <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            {category}
+          </div>
+          <ul className="space-y-0.5">
+            {groups.get(category)!.map((node) => (
+              <TreeNode key={node.id} node={node} depth={0} {...props} />
+            ))}
+          </ul>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 
@@ -53,9 +81,8 @@ function TreeNode({ node, depth, selectedId, onSelect, onCreate }: NodeProps) {
 
   const remove = async () => {
     if (!confirm(`Delete "${node.title || "Untitled"}"?`)) return;
-    await fetch(`/api/documents/${node.id}`, { method: "DELETE" });
+    await apiFetch(`/api/documents/${node.id}`, { method: "DELETE" });
     setMenuOpen(false);
-    // Notify AppShell to re-fetch and clear selection if needed.
     window.dispatchEvent(new CustomEvent("documents:changed"));
   };
 
@@ -90,6 +117,11 @@ function TreeNode({ node, depth, selectedId, onSelect, onCreate }: NodeProps) {
         >
           <FileText className="h-3.5 w-3.5 shrink-0 text-gray-500" />
           <span className="truncate">{node.title || "Untitled"}</span>
+          {node.category && depth === 0 && (
+            <span className="ml-1 shrink-0 rounded bg-gray-200 px-1 py-0.5 text-[10px] text-gray-600">
+              {node.category}
+            </span>
+          )}
         </button>
 
         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100">
