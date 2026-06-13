@@ -7,8 +7,8 @@ function getSessionId(req: NextRequest): string {
 
 export async function GET(req: NextRequest) {
   try {
-    const sessionId = getSessionId(req);
-    if (!sessionId) {
+//    const sessionId = getSessionId(req);
+  //  if (!sessionId) {
       // No session yet (shouldn't happen with the client wrapper,
       // but stay safe). Return an empty list rather than leaking
       // other users' data.
