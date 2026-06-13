@@ -29,35 +29,28 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-//  try {
-//    const sessionId = getSessionId(req);
-//    if (!sessionId) {
-//      return NextResponse.json(
-//        { error: "Missing session id" },
-//        { status: 400 }
-//      );
-    }
+  try {
+    // --- AUTH KONTROL(yarin aktif edilecek) ---
+    // const sessionId = getSessionId(req);
+    // if (!sessionId) {
+    //   return NextResponse.json(
+    //     { error: "Missing session id" },
+    //     { status: 400 }
+    //   );
+    // }
+    // --------------------------------------------
 
     const body = await req.json();
-    const { title, content, parentDocumentId, isPublished, category } =
-      body ?? {};
+    const { title, content, parentDocumentId, isPublished, category } = body ?? {};
 
     const document = await prisma.document.create({
       data: {
-        title:
-          typeof title === "string" && title.length > 0 ? title : "Untitled",
+        title: typeof title === "string" && title.length > 0 ? title : "Untitled",
         content: typeof content === "string" ? content : "",
-        parentDocumentId:
-          typeof parentDocumentId === "string" &&
-          parentDocumentId.length > 0
-            ? parentDocumentId
-            : null,
+        parentDocumentId: typeof parentDocumentId === "string" && parentDocumentId.length > 0 ? parentDocumentId : null,
         isPublished: Boolean(isPublished),
-        category:
-          typeof category === "string" && category.length > 0
-            ? category
-            : null,
-        sessionId,
+        category: typeof category === "string" && category.length > 0 ? category : null,
+        sessionId: "anonymous", // Yarın Auth gelince burası user.id olacak
       },
     });
 
