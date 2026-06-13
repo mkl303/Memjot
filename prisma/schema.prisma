@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -13,7 +13,7 @@ model Document {
   content          String     @default("")
   isPublished      Boolean    @default(false)
   category         String?
-  sessionId        String
+  sessionId        String?
   parentDocumentId String?
   parentDocument   Document?  @relation("DocumentHierarchy", fields: [parentDocumentId], references: [id], onDelete: Cascade)
   childDocuments   Document[] @relation("DocumentHierarchy")

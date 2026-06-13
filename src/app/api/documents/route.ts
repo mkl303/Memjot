@@ -29,13 +29,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const sessionId = getSessionId(req);
-    if (!sessionId) {
-      return NextResponse.json(
-        { error: "Missing session id" },
-        { status: 400 }
-      );
+//  try {
+//    const sessionId = getSessionId(req);
+//    if (!sessionId) {
+//      return NextResponse.json(
+//        { error: "Missing session id" },
+//        { status: 400 }
+//      );
     }
 
     const body = await req.json();
