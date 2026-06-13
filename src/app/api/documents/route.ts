@@ -7,17 +7,27 @@ function getSessionId(req: NextRequest): string {
 
 export async function GET(req: NextRequest) {
   try {
-//    const sessionId = getSessionId(req);
-  //  if (!sessionId) {
-      // No session yet (shouldn't happen with the client wrapper,
-      // but stay safe). Return an empty list rather than leaking
-      // other users' data.
-      return NextResponse.json([]);
-    }
+    // --- ESKİ AUTH KONTROLÜ VE ARAMA MANTIĞI (Yarın aktif edilecek) ---
+    // const sessionId = getSessionId(req);
+    // if (!sessionId) {
+    //   // No session yet (shouldn't happen with the client wrapper,
+    //   // but stay safe). Return an empty list rather than leaking
+    //   // other users' data.
+    //   return NextResponse.json([]);
+    // }
+    // const documents = await prisma.document.findMany({
+    //   where: { sessionId },
+    //   orderBy: { updatedAt: "desc" },
+    // });
+    // ------------------------------------------------------------------
+
+    // --- YENİ GEÇİCİ KOD (Anonim test için) ---
     const documents = await prisma.document.findMany({
-      where: { sessionId },
+      where: { sessionId: "anonymous" }, 
       orderBy: { updatedAt: "desc" },
     });
+    // ------------------------------------------
+
     return NextResponse.json(documents);
   } catch (error) {
     console.error("[GET /api/documents]", error);
