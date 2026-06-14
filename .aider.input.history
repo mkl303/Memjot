@@ -192,3 +192,91 @@
 +- Add an image upload button to the editor toolbar. When a user selects an image, convert it to a Base64 string and insert it into the TipTap editor. (This avoids external cloud storage costs for a free app).
 +
 +Execute these changes step-by-step: first the Prisma schema, then the API routes, and finally the UI components.
+
+# 2026-06-14 05:40:56.622202
++We are continuing the development of our Notion Clone MVP. In our last session, you successfully updated the database for NextAuth, Export/Import, and Image support, but you were interrupted before finishing the UI and fixing some bugs. Also, to temporarily test the app, I modified `src/app/api/documents/route.ts` by commenting out the session checks and hardcoding `sessionId: "anonymous"`.
++
++Please implement the following comprehensive updates step-by-step. STRICTLY use the Aider file edit format (bare filename on line 1, ``` on line 2, and the full untruncated code block):
++
++**PHASE 0: Cleanup & Restore Auth API**
++- Update `src/app/api/documents/route.ts`: Remove the `sessionId: "anonymous"` hacks and my commented-out code. Restore the proper NextAuth validation (e.g., `getServerSession`) for GET, POST, PATCH, and DELETE routes. Ensure document operations are strictly tied to the logged-in user's ID/Session.
++
++**PHASE 1: Fix Interrupted Auth UI & Image Bug**
++- Update `AppShell.tsx` and `Sidebar.tsx`: Add a section at the bottom of the Sidebar showing the logged-in user's email and a "Sign Out" button. If not logged in, show a "Sign In" button (redirecting to `/login` or handling Auth.js sign-in).
++- Update `Editor.tsx`: Fix the TipTap image bug where typing next to an image deletes it. Ensure the Image extension is configured correctly (e.g., `inline: true` or standard block behavior that allows adding text below it).
++
++**PHASE 2: Workspaces (Database & UI)**
++- Update `prisma/schema.prisma`: Add a `Workspace` model (id, name, userId). Update the `Document` model to belong to a `Workspace` (`workspaceId`).
++- UI (`Sidebar.tsx`): Add a Workspace Switcher dropdown at the top of the Sidebar (like Notion). Users should be able to create a new workspace and switch between them.
++- API: Update document fetching and creating logic to strictly filter by the currently active `workspaceId`.
++
++**PHASE 3: Drag and Drop Categories**
++- Assume I have installed `@hello-pangea/dnd`.
++- Update `Sidebar.tsx` and `DocumentTree.tsx`: Implement drag-and-drop functionality so users can drag documents into different categories or reorder them within the sidebar.
++
++**PHASE 4: Dark Mode & Advanced Notion Features**
++- Dark Mode: Assume `next-themes` is installed. Wrap the app with `ThemeProvider` in `layout.tsx`. Add a Theme Toggle button to the Sidebar. Apply Tailwind dark classes (e.g., `dark:bg-neutral-900`) across all components.
++- Advanced Editor (`Editor.tsx`): Add `@tiptap/extension-task-list`, `@tiptap/extension-task-item`, and `@tiptap/extension-code-block-lowlight`. 
++- Slash Commands: Add TipTap's `FloatingMenu` that appears on empty lines to quickly insert Headings, Bullet Lists, and Task Lists.
++
++Execute these phases carefully. If you need to stop and ask for confirmation after modifying the Prisma schema, you can do so.
+
+# 2026-06-14 05:40:56.622335
++We are continuing the development of our Notion Clone MVP. In our last session, you successfully updated the database for NextAuth, Export/Import, and Image support, but you were interrupted before finishing the UI and fixing some bugs. Also, to temporarily test the app, I modified `src/app/api/documents/route.ts` by commenting out the session checks and hardcoding `sessionId: "anonymous"`.
++
++Please implement the following comprehensive updates step-by-step. STRICTLY use the Aider file edit format (bare filename on line 1, ``` on line 2, and the full untruncated code block):
++
++**PHASE 0: Cleanup & Restore Auth API**
++- Update `src/app/api/documents/route.ts`: Remove the `sessionId: "anonymous"` hacks and my commented-out code. Restore the proper NextAuth validation (e.g., `getServerSession`) for GET, POST, PATCH, and DELETE routes. Ensure document operations are strictly tied to the logged-in user's ID/Session.
++
++**PHASE 1: Fix Interrupted Auth UI & Image Bug**
++- Update `AppShell.tsx` and `Sidebar.tsx`: Add a section at the bottom of the Sidebar showing the logged-in user's email and a "Sign Out" button. If not logged in, show a "Sign In" button (redirecting to `/login` or handling Auth.js sign-in).
++- Update `Editor.tsx`: Fix the TipTap image bug where typing next to an image deletes it. Ensure the Image extension is configured correctly (e.g., `inline: true` or standard block behavior that allows adding text below it).
++
++**PHASE 2: Workspaces (Database & UI)**
++- Update `prisma/schema.prisma`: Add a `Workspace` model (id, name, userId). Update the `Document` model to belong to a `Workspace` (`workspaceId`).
++- UI (`Sidebar.tsx`): Add a Workspace Switcher dropdown at the top of the Sidebar (like Notion). Users should be able to create a new workspace and switch between them.
++- API: Update document fetching and creating logic to strictly filter by the currently active `workspaceId`.
++
++**PHASE 3: Drag and Drop Categories**
++- Assume I have installed `@hello-pangea/dnd`.
++- Update `Sidebar.tsx` and `DocumentTree.tsx`: Implement drag-and-drop functionality so users can drag documents into different categories or reorder them within the sidebar.
++
++**PHASE 4: Dark Mode & Advanced Notion Features**
++- Dark Mode: Assume `next-themes` is installed. Wrap the app with `ThemeProvider` in `layout.tsx`. Add a Theme Toggle button to the Sidebar. Apply Tailwind dark classes (e.g., `dark:bg-neutral-900`) across all components.
++- Advanced Editor (`Editor.tsx`): Add `@tiptap/extension-task-list`, `@tiptap/extension-task-item`, and `@tiptap/extension-code-block-lowlight`. 
++- Slash Commands: Add TipTap's `FloatingMenu` that appears on empty lines to quickly insert Headings, Bullet Lists, and Task Lists.
++
++Execute these phases carefully. If you need to stop and ask for confirmation after modifying the Prisma schema, you can do so.
+
+# 2026-06-14 05:44:47.008586
++You are completely right to ask. Because our previous session crashed exactly during the NextAuth setup, those files were NEVER created. The Prisma schema was only partially updated (only `sessionId` was added to `Document`), and the User models were never added. 
++
++There is no `auth.ts`, no NextAuth route handler, and no `login` page yet.
++
++Please treat this as a fresh NextAuth setup. Here is what you need to do before starting PHASE 0:
++1. Update `prisma/schema.prisma` to include standard NextAuth models (`User`, `Account`, `Session`, etc.). Add a `password` string field to the `User` model for Credentials auth.
++2. Create the NextAuth v4 route handler `src/app/api/auth/[...nextauth]/route.ts` using the Credentials provider (with bcryptjs for password hashing).
++3. Create a basic `src/app/login/page.tsx` (and optionally a register page) so users can sign in.
++4. After creating these, proceed with PHASE 0, treating NextAuth as the source of truth instead of the old localStorage hack.
++
++Please execute these missing setup steps first, ask me to run `npx prisma db push`, and then proceed with the rest of the PHASES.
+
+# 2026-06-14 05:44:47.008740
++You are completely right to ask. Because our previous session crashed exactly during the NextAuth setup, those files were NEVER created. The Prisma schema was only partially updated (only `sessionId` was added to `Document`), and the User models were never added. 
++
++There is no `auth.ts`, no NextAuth route handler, and no `login` page yet.
++
++Please treat this as a fresh NextAuth setup. Here is what you need to do before starting PHASE 0:
++1. Update `prisma/schema.prisma` to include standard NextAuth models (`User`, `Account`, `Session`, etc.). Add a `password` string field to the `User` model for Credentials auth.
++2. Create the NextAuth v4 route handler `src/app/api/auth/[...nextauth]/route.ts` using the Credentials provider (with bcryptjs for password hashing).
++3. Create a basic `src/app/login/page.tsx` (and optionally a register page) so users can sign in.
++4. After creating these, proceed with PHASE 0, treating NextAuth as the source of truth instead of the old localStorage hack.
++
++Please execute these missing setup steps first, ask me to run `npx prisma db push`, and then proceed with the rest of the PHASES.
+
+# 2026-06-14 06:06:20.072648
++You generated the code correctly, but you failed to conform to the Aider file edit format. You forgot to put the exact filename before the ``` blocks. Please output the exact same code changes again, but strictly follow the format so they can be applied to my files.
+
+# 2026-06-14 06:06:20.072724
++You generated the code correctly, but you failed to conform to the Aider file edit format. You forgot to put the exact filename before the ``` blocks. Please output the exact same code changes again, but strictly follow the format so they can be applied to my files.
