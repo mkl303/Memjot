@@ -724,3 +724,45 @@
 +src/app/api/documents/route.ts
 +```typescript
 +// completely refactored, safe, and current code here
+
+# 2026-06-19 18:58:48.354105
++/add src/app/api/documents/route.ts
+
+# 2026-06-19 18:58:48.354180
++/add src/app/api/documents/route.ts
+
+# 2026-06-19 18:59:12.443162
++Act as an Expert Full-Stack Architect. We MUST fix `src/app/api/documents/route.ts` immediately. The Next.js build is failing precisely on this file.
++
++THE ERROR:
++Around line 26, the file still contains this exact code:
++`where: { sessionId: "anonymous" }`
++
++YOUR TASK:
++1. Completely DELETE the `sessionId: "anonymous"` hack.
++2. Extract the user ID from the headers: `const userId = req.headers.get("x-user-id");`
++3. If there is no `userId`, safely return an empty array (`return NextResponse.json([]);`).
++4. Update the Prisma `findMany` query to use `where: { userId }` instead of `sessionId`.
++5. Update the `POST` method in this file to also use `userId` extracted from the header.
++6. Ensure the Prisma import uses a relative path (like `../../../lib/prisma`) and NOT an `@/` alias.
++
++CRITICAL AIDER FORMATTING RULES:
++You must output the ENTIRE, complete, and functional code for `src/app/api/documents/route.ts`. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code remains". Fix it completely.
+
+# 2026-06-19 18:59:12.443236
++Act as an Expert Full-Stack Architect. We MUST fix `src/app/api/documents/route.ts` immediately. The Next.js build is failing precisely on this file.
++
++THE ERROR:
++Around line 26, the file still contains this exact code:
++`where: { sessionId: "anonymous" }`
++
++YOUR TASK:
++1. Completely DELETE the `sessionId: "anonymous"` hack.
++2. Extract the user ID from the headers: `const userId = req.headers.get("x-user-id");`
++3. If there is no `userId`, safely return an empty array (`return NextResponse.json([]);`).
++4. Update the Prisma `findMany` query to use `where: { userId }` instead of `sessionId`.
++5. Update the `POST` method in this file to also use `userId` extracted from the header.
++6. Ensure the Prisma import uses a relative path (like `../../../lib/prisma`) and NOT an `@/` alias.
++
++CRITICAL AIDER FORMATTING RULES:
++You must output the ENTIRE, complete, and functional code for `src/app/api/documents/route.ts`. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code remains". Fix it completely.
