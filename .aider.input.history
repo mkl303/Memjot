@@ -280,3 +280,91 @@
 
 # 2026-06-14 06:06:20.072724
 +You generated the code correctly, but you failed to conform to the Aider file edit format. You forgot to put the exact filename before the ``` blocks. Please output the exact same code changes again, but strictly follow the format so they can be applied to my files.
+
+# 2026-06-19 17:22:42.200563
++CONTEXT & MISSION:
++We are continuing the development of our Notion Clone web application built with Next.js (App Router), React, and Prisma. In the previous session, due to API limit exhaustion, several critical code changes regarding the Sidebar and Page-Management system were generated or discussed but NOT fully committed/written to the actual files. 
++
++Your immediate mission is to perform a comprehensive recovery and architecture sync, then implement the missing implementations without breaking existing data structures.
++
++---
++
++STEP 1: DATABASE & PRISMA RECOVERY (Data Layer)
++1. Check the `prisma/schema.prisma` file. Ensure the `Page` or `Document` model supports a hierarchical nested structure (parent-child relationship for subpages):
++   - Must have an optional `parentId String?` and a relation pointing back to itself: `parent Page? @relation("SubPages", fields: [parentId], references: [id], onDelete: Cascade)`
++   - Must have `children Page[] @relation("SubPages")`
++2. Ensure fields like `title` (String), `content` (String/Json?), `isArchived` (Boolean), and `isPublished` (Boolean) are present.
++3. If any database fields are missing or changed, write the schema and run/instruct the local migration (`npx prisma db push` or `npx prisma migrate dev`).
++
++---
++
++STEP 2: STATE MANAGEMENT & SIDEBAR COMPLETION (UI/UX Layer)
++1. Complete the functional Sidebar component. It must dynamically fetch and render the list of pages from the Prisma database using Next.js Server Actions or API Routes.
++2. Implement recursive rendering for nested subpages within the sidebar (collapsible tree view support).
++3. The Sidebar must handle:
++   - "Create New Page" button triggering an optimistic UI update or immediate loading state while hitting the database.
++   - Active page highligting based on the current URL router path.
++   - Expand/Collapse toggles for pages that have children, persisting the open/close state in React context or local storage.
++
++---
++
++STEP 3: PAGE-MANAGEMENT ROUTING & CONTROLLERS (Routing Layer)
++1. Complete the dynamic routing structure under `app/(main)/pages/[pageId]/page.tsx` (or your equivalent active main directory).
++2. Ensure proper error routing: If `pageId` does not exist in Prisma, gracefully redirect or show a clean 404/not-found state.
++3. Implement Server Actions or API routes for:
++   - Creating a blank page/subpage.
++   - Deleting a page (handling cascade deletion or unlinking of child pages safely).
++   - Renaming a page title directly from the sidebar or the main header view, ensuring the sidebar reflects the new title instantly without a full page reload.
++
++---
++
++CRITICAL EXECUTION RULES:
++- DO NOT hallucinate or delete pre-existing layout structures, authentication wraps, or global providers.
++- If a code block from the previous session was cut in half, reconstruct it completely using proper TypeScript interfaces and error handling (try-catch blocks for database transactions).
++- Verify all Next.js imports (`next/navigation`, `next/link`) use the modern App Router standards instead of the legacy Pages Router.
++
++Please read the repository files, inspect the current state of the sidebar and prisma files, and implement the missing logic step-by-step.
+
+# 2026-06-19 17:22:42.200684
++CONTEXT & MISSION:
++We are continuing the development of our Notion Clone web application built with Next.js (App Router), React, and Prisma. In the previous session, due to API limit exhaustion, several critical code changes regarding the Sidebar and Page-Management system were generated or discussed but NOT fully committed/written to the actual files. 
++
++Your immediate mission is to perform a comprehensive recovery and architecture sync, then implement the missing implementations without breaking existing data structures.
++
++---
++
++STEP 1: DATABASE & PRISMA RECOVERY (Data Layer)
++1. Check the `prisma/schema.prisma` file. Ensure the `Page` or `Document` model supports a hierarchical nested structure (parent-child relationship for subpages):
++   - Must have an optional `parentId String?` and a relation pointing back to itself: `parent Page? @relation("SubPages", fields: [parentId], references: [id], onDelete: Cascade)`
++   - Must have `children Page[] @relation("SubPages")`
++2. Ensure fields like `title` (String), `content` (String/Json?), `isArchived` (Boolean), and `isPublished` (Boolean) are present.
++3. If any database fields are missing or changed, write the schema and run/instruct the local migration (`npx prisma db push` or `npx prisma migrate dev`).
++
++---
++
++STEP 2: STATE MANAGEMENT & SIDEBAR COMPLETION (UI/UX Layer)
++1. Complete the functional Sidebar component. It must dynamically fetch and render the list of pages from the Prisma database using Next.js Server Actions or API Routes.
++2. Implement recursive rendering for nested subpages within the sidebar (collapsible tree view support).
++3. The Sidebar must handle:
++   - "Create New Page" button triggering an optimistic UI update or immediate loading state while hitting the database.
++   - Active page highligting based on the current URL router path.
++   - Expand/Collapse toggles for pages that have children, persisting the open/close state in React context or local storage.
++
++---
++
++STEP 3: PAGE-MANAGEMENT ROUTING & CONTROLLERS (Routing Layer)
++1. Complete the dynamic routing structure under `app/(main)/pages/[pageId]/page.tsx` (or your equivalent active main directory).
++2. Ensure proper error routing: If `pageId` does not exist in Prisma, gracefully redirect or show a clean 404/not-found state.
++3. Implement Server Actions or API routes for:
++   - Creating a blank page/subpage.
++   - Deleting a page (handling cascade deletion or unlinking of child pages safely).
++   - Renaming a page title directly from the sidebar or the main header view, ensuring the sidebar reflects the new title instantly without a full page reload.
++
++---
++
++CRITICAL EXECUTION RULES:
++- DO NOT hallucinate or delete pre-existing layout structures, authentication wraps, or global providers.
++- If a code block from the previous session was cut in half, reconstruct it completely using proper TypeScript interfaces and error handling (try-catch blocks for database transactions).
++- Verify all Next.js imports (`next/navigation`, `next/link`) use the modern App Router standards instead of the legacy Pages Router.
++
++Please read the repository files, inspect the current state of the sidebar and prisma files, and implement the missing logic step-by-step.
