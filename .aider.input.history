@@ -766,3 +766,59 @@
 +
 +CRITICAL AIDER FORMATTING RULES:
 +You must output the ENTIRE, complete, and functional code for `src/app/api/documents/route.ts`. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code remains". Fix it completely.
+
+# 2026-06-19 19:05:07.467571
++Act as an Expert Full-Stack Architect. We are performing a total code-cleanup and synchronization refactor. 
++
++THE SITUATION:
++You have previously inserted commented-out blocks ("ESKİ AUTH...") and temporary hacks ("anonymous" tests) across multiple API routes. These are now fossilized, incompatible with our current Prisma `userId` schema, and are breaking the production build on Vercel.
++
++YOUR TASK (GLOBAL REFACTOR):
++1. REPO-WIDE SCAN: Use your repository map to identify ALL API route files (`src/app/api/...`) that contain either commented-out legacy code or "anonymous" hacks.
++2. SYNCHRONIZATION: Read the intent of those commented-out blocks, but DO NOT use the old code. Instead, write a NEW implementation that matches our current `userId` based security model.
++3. CLEANUP: Delete ALL legacy comments, all `//` commented-out blocks, and all temporary hacks.
++4. STANDARDIZATION:
++   - Extract `userId` from `x-user-id` header in every single API route.
++   - If `userId` is missing, return an empty array or 401 status.
++   - All Prisma queries must use `where: { userId }`.
++   - Use strictly relative import paths (e.g., `../../../lib/prisma`).
++   - Remove ALL `@/` aliases.
++
++CRITICAL FORMATTING RULE:
++For every file you touch, you must output the ENTIRE, clean, and production-ready source code. 
++- No elisions ("// rest of code...").
++- No legacy comments.
++- One file per block, preceded by its file path.
++
++Example:
++src/app/api/pages/route.ts
++```typescript
++// Clean, production-ready code here
+
+# 2026-06-19 19:05:07.467686
++Act as an Expert Full-Stack Architect. We are performing a total code-cleanup and synchronization refactor. 
++
++THE SITUATION:
++You have previously inserted commented-out blocks ("ESKİ AUTH...") and temporary hacks ("anonymous" tests) across multiple API routes. These are now fossilized, incompatible with our current Prisma `userId` schema, and are breaking the production build on Vercel.
++
++YOUR TASK (GLOBAL REFACTOR):
++1. REPO-WIDE SCAN: Use your repository map to identify ALL API route files (`src/app/api/...`) that contain either commented-out legacy code or "anonymous" hacks.
++2. SYNCHRONIZATION: Read the intent of those commented-out blocks, but DO NOT use the old code. Instead, write a NEW implementation that matches our current `userId` based security model.
++3. CLEANUP: Delete ALL legacy comments, all `//` commented-out blocks, and all temporary hacks.
++4. STANDARDIZATION:
++   - Extract `userId` from `x-user-id` header in every single API route.
++   - If `userId` is missing, return an empty array or 401 status.
++   - All Prisma queries must use `where: { userId }`.
++   - Use strictly relative import paths (e.g., `../../../lib/prisma`).
++   - Remove ALL `@/` aliases.
++
++CRITICAL FORMATTING RULE:
++For every file you touch, you must output the ENTIRE, clean, and production-ready source code. 
++- No elisions ("// rest of code...").
++- No legacy comments.
++- One file per block, preceded by its file path.
++
++Example:
++src/app/api/pages/route.ts
++```typescript
++// Clean, production-ready code here
