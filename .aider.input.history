@@ -368,3 +368,87 @@
 +- Verify all Next.js imports (`next/navigation`, `next/link`) use the modern App Router standards instead of the legacy Pages Router.
 +
 +Please read the repository files, inspect the current state of the sidebar and prisma files, and implement the missing logic step-by-step.
+
+# 2026-06-19 18:04:22.509647
++Act as an Expert Full-Stack Architect. We are continuing our Notion Clone project using Next.js (App Router), Prisma, SQLite, Tailwind CSS, and Lucide-React. 
++
++CRITICAL AIDER FORMATTING RULES (READ CAREFULLY TO AVOID PARSING ERRORS):
++You must output code strictly following Aider's file listing format. 
++1. You MUST provide the exact file path on the line immediately preceding the triple backticks (```). Do not put any conversational text between the filename and the code block.
++Example of correct format:
++src/app/api/pages/route.ts
++```typescript
++// full code here
++DO NOT use elisions, placeholders, or comments like "// rest of the code remains the same". You must output the ENTIRE, complete, and functional code for any file you edit or create.
++
++TASKS TO COMPLETE:
++
++AUTHENTICATION & DATA ISOLATION (Currently, all users see the same notes):
++
++Update prisma/schema.prisma: Add a userId (String) field to both Page and Block models.
++
++Update src/components/Sidebar.tsx: Implement logic to generate a unique UUID on the client side (store it in localStorage as 'device_user_id'). Send this UUID in a custom header x-user-id for all API requests.
++
++Update all existing API routes (GET and POST in src/app/api/pages/route.ts) to strictly filter, create, and fetch pages matching the x-user-id header.
++
++CASCADE DELETION (Currently, pages cannot be deleted):
++
++Update prisma/schema.prisma: Add onDelete: Cascade to the relations so deleting a page deletes its child pages and blocks automatically.
++
++Create src/app/api/pages/[id]/route.ts: Implement a secure DELETE method that checks the x-user-id before deleting.
++
++Update the UI (e.g., Sidebar.tsx) to wire up the trash/delete icon to this new DELETE API endpoint.
++
++NEW FEATURE: SLASH (/) COMMAND MENU:
++
++In the Block Editor component, implement a minimalist, Tailwind-styled dropdown menu that appears ONLY when the user types / on an empty text block.
++
++The menu should have options for "Heading 1 (H1)", "Heading 2 (H2)", and "Bullet List". Selecting an option should change the block's type accordingly and close the menu.
++
++STRICT TECHNICAL GUARDRAILS:
++
++NO @/ ALIASES: You must use relative paths for all imports (e.g., ../../lib/prisma or ../components). This is mandatory to prevent "Module not found" build errors.
++
++PRISMA SQLITE RULES: Do not use @db.String(25) or any DB-specific string limits. Use plain String. Do not use the url property inside the datasource block in schema.prisma (assume Prisma 7 config).
+
+# 2026-06-19 18:04:22.509713
++Act as an Expert Full-Stack Architect. We are continuing our Notion Clone project using Next.js (App Router), Prisma, SQLite, Tailwind CSS, and Lucide-React. 
++
++CRITICAL AIDER FORMATTING RULES (READ CAREFULLY TO AVOID PARSING ERRORS):
++You must output code strictly following Aider's file listing format. 
++1. You MUST provide the exact file path on the line immediately preceding the triple backticks (```). Do not put any conversational text between the filename and the code block.
++Example of correct format:
++src/app/api/pages/route.ts
++```typescript
++// full code here
++DO NOT use elisions, placeholders, or comments like "// rest of the code remains the same". You must output the ENTIRE, complete, and functional code for any file you edit or create.
++
++TASKS TO COMPLETE:
++
++AUTHENTICATION & DATA ISOLATION (Currently, all users see the same notes):
++
++Update prisma/schema.prisma: Add a userId (String) field to both Page and Block models.
++
++Update src/components/Sidebar.tsx: Implement logic to generate a unique UUID on the client side (store it in localStorage as 'device_user_id'). Send this UUID in a custom header x-user-id for all API requests.
++
++Update all existing API routes (GET and POST in src/app/api/pages/route.ts) to strictly filter, create, and fetch pages matching the x-user-id header.
++
++CASCADE DELETION (Currently, pages cannot be deleted):
++
++Update prisma/schema.prisma: Add onDelete: Cascade to the relations so deleting a page deletes its child pages and blocks automatically.
++
++Create src/app/api/pages/[id]/route.ts: Implement a secure DELETE method that checks the x-user-id before deleting.
++
++Update the UI (e.g., Sidebar.tsx) to wire up the trash/delete icon to this new DELETE API endpoint.
++
++NEW FEATURE: SLASH (/) COMMAND MENU:
++
++In the Block Editor component, implement a minimalist, Tailwind-styled dropdown menu that appears ONLY when the user types / on an empty text block.
++
++The menu should have options for "Heading 1 (H1)", "Heading 2 (H2)", and "Bullet List". Selecting an option should change the block's type accordingly and close the menu.
++
++STRICT TECHNICAL GUARDRAILS:
++
++NO @/ ALIASES: You must use relative paths for all imports (e.g., ../../lib/prisma or ../components). This is mandatory to prevent "Module not found" build errors.
++
++PRISMA SQLITE RULES: Do not use @db.String(25) or any DB-specific string limits. Use plain String. Do not use the url property inside the datasource block in schema.prisma (assume Prisma 7 config).
