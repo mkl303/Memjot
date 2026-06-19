@@ -638,3 +638,89 @@
 +
 +CRITICAL FORMATTING RULE:
 +You must output code strictly following Aider's file listing format. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code". Output the ENTIRE, complete, and functional code for `src/app/api/documents/import/route.ts`.
+
+# 2026-06-19 18:48:00.375418
++Act as an Expert Full-Stack Architect. We fixed one file, but the Next.js build failed on another file due to the same Prisma schema update (migrating from `sessionId` to `userId`).
++
++THE ERROR:
++File: `src/app/api/documents/route.ts`
++"Type error: Object literal may only specify known properties, and 'sessionId' does not exist in type 'DocumentWhereInput'."
++
++THE FIX:
++Update `src/app/api/documents/route.ts`. Around line 24, there is old test code:
++`where: { sessionId: "anonymous" }`
++
++1. Replace `sessionId` with `userId`.
++2. Update all GET and POST methods in this file so they properly extract `userId` from the `x-user-id` request header (instead of hardcoding "anonymous" or using `sessionId`).
++3. Scan the entire file for any other `sessionId` leftovers and fix them.
++
++CRITICAL FORMATTING RULE:
++You must output the ENTIRE, complete, and functional code for `src/app/api/documents/route.ts`. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code".
+
+# 2026-06-19 18:48:00.375503
++Act as an Expert Full-Stack Architect. We fixed one file, but the Next.js build failed on another file due to the same Prisma schema update (migrating from `sessionId` to `userId`).
++
++THE ERROR:
++File: `src/app/api/documents/route.ts`
++"Type error: Object literal may only specify known properties, and 'sessionId' does not exist in type 'DocumentWhereInput'."
++
++THE FIX:
++Update `src/app/api/documents/route.ts`. Around line 24, there is old test code:
++`where: { sessionId: "anonymous" }`
++
++1. Replace `sessionId` with `userId`.
++2. Update all GET and POST methods in this file so they properly extract `userId` from the `x-user-id` request header (instead of hardcoding "anonymous" or using `sessionId`).
++3. Scan the entire file for any other `sessionId` leftovers and fix them.
++
++CRITICAL FORMATTING RULE:
++You must output the ENTIRE, complete, and functional code for `src/app/api/documents/route.ts`. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code".
+
+# 2026-06-19 18:54:12.157367
++Act as an Expert Full-Stack Architect running inside Aider. We need to perform a REPOSITORY-WIDE refactor for our Next.js App Router API.
++
++THE CONTEXT & DANGER:
++Across multiple API routes, we have temporary hacks like `where: { sessionId: "anonymous" }`. We also have old authentication logic commented out (labeled "// --- ESKİ AUTH KONTROLÜ..."). 
++CRITICAL WARNING: The codebase has evolved significantly since that old auth logic was commented out. If you simply uncomment it, it will cause massive compatibility and type errors with our current features.
++
++YOUR TASK:
++Use your repository map to scan ALL API routes. For EVERY file where you find the temporary "anonymous" hack or leftover `sessionId` references:
++
++1. ANALYZE AND ADAPT: Read the commented-out old auth logic strictly to understand the INTENT (which is to isolate data per user using a header), but DO NOT blindly uncomment it. 
++2. IMPLEMENT SAFELY: Write NEW, fully compatible authentication logic tailored to the CURRENT state of the file. 
++3. Extract `userId` from the `x-user-id` request header. If the ID is missing, return a secure 401 Unauthorized or empty response depending on the route context.
++4. Replace all `sessionId` references with `userId` in your new Prisma queries (`where`, `create`, etc.).
++5. DELETE the temporary "anonymous" hacks and the old commented-out blocks to clean up the file.
++6. FIX IMPORTS: Ensure absolutely NO `@/` import aliases exist in the files you edit. Convert them all to relative paths (e.g., `../../../lib/prisma`).
++
++CRITICAL AIDER FORMATTING RULES (DO NOT FAIL THESE):
++- You must output the ENTIRE, complete, and functional code for EVERY file you modify. Do not use elisions like "// rest of code remains".
++- Provide the exact file path on the line immediately preceding the triple backticks for each file.
++Example:
++src/app/api/documents/route.ts
++```typescript
++// completely refactored, safe, and current code here
+
+# 2026-06-19 18:54:12.157460
++Act as an Expert Full-Stack Architect running inside Aider. We need to perform a REPOSITORY-WIDE refactor for our Next.js App Router API.
++
++THE CONTEXT & DANGER:
++Across multiple API routes, we have temporary hacks like `where: { sessionId: "anonymous" }`. We also have old authentication logic commented out (labeled "// --- ESKİ AUTH KONTROLÜ..."). 
++CRITICAL WARNING: The codebase has evolved significantly since that old auth logic was commented out. If you simply uncomment it, it will cause massive compatibility and type errors with our current features.
++
++YOUR TASK:
++Use your repository map to scan ALL API routes. For EVERY file where you find the temporary "anonymous" hack or leftover `sessionId` references:
++
++1. ANALYZE AND ADAPT: Read the commented-out old auth logic strictly to understand the INTENT (which is to isolate data per user using a header), but DO NOT blindly uncomment it. 
++2. IMPLEMENT SAFELY: Write NEW, fully compatible authentication logic tailored to the CURRENT state of the file. 
++3. Extract `userId` from the `x-user-id` request header. If the ID is missing, return a secure 401 Unauthorized or empty response depending on the route context.
++4. Replace all `sessionId` references with `userId` in your new Prisma queries (`where`, `create`, etc.).
++5. DELETE the temporary "anonymous" hacks and the old commented-out blocks to clean up the file.
++6. FIX IMPORTS: Ensure absolutely NO `@/` import aliases exist in the files you edit. Convert them all to relative paths (e.g., `../../../lib/prisma`).
++
++CRITICAL AIDER FORMATTING RULES (DO NOT FAIL THESE):
++- You must output the ENTIRE, complete, and functional code for EVERY file you modify. Do not use elisions like "// rest of code remains".
++- Provide the exact file path on the line immediately preceding the triple backticks for each file.
++Example:
++src/app/api/documents/route.ts
++```typescript
++// completely refactored, safe, and current code here
