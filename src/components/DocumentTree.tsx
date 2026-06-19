@@ -11,10 +11,10 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { buildTree } from "@/lib/tree";
-import type { DocumentNode, Document } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { apiFetch } from "@/lib/api";
+import { buildTree } from "../lib/tree";
+import type { DocumentNode, Document } from "../lib/types";
+import { cn } from "../lib/utils";
+import { apiFetch } from "../lib/api";
 
 const STORAGE_KEY = "sidebar:expanded";
 const UNCATEGORIZED = "Uncategorized";
@@ -144,9 +144,22 @@ function TreeNode({ node, depth, selectedId, onSelect, onCreate }: NodeProps) {
     setOpen((v) => !v);
   };
 
+  // Delete is wired straight to the DELETE endpoint, which
+  // checks `x-user-id` ownership before removing anything. The
+  // schema's `onDelete: Cascade` on the self-relation handles
+  // child-page cleanup automatically.
   const remove = async () => {
     if (!confirm(`Delete "${node.title || "Untitled"}"?`)) return;
-    await apiFetch(`/api/documents/${node.id}`, { method: "DELETE" });
+    const res = await apiFetch(`/api/documents/${node.id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      const message =
+        res.status === 404
+          ? "This page can no longer be found. It may already be deleted."
+          : "Failed to delete page. Please try again.";
+      alert(message);
+    }
     setMenuOpen(false);
     window.dispatchEvent(new CustomEvent("documents:changed"));
   };

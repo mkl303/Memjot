@@ -3,8 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
 }
 
 model Document {
@@ -14,7 +13,7 @@ model Document {
   isPublished      Boolean    @default(false)
   isArchived       Boolean    @default(false)
   category         String?
-  sessionId        String?
+  userId           String?
   parentDocumentId String?
   parentDocument   Document?  @relation("DocumentHierarchy", fields: [parentDocumentId], references: [id], onDelete: Cascade)
   childDocuments   Document[] @relation("DocumentHierarchy")
@@ -22,5 +21,5 @@ model Document {
   updatedAt        DateTime   @updatedAt
 
   @@index([parentDocumentId])
-  @@index([sessionId])
+  @@index([userId])
 }

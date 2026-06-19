@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Editor } from "./Editor";
-import { useDebounce } from "@/hooks/useDebounce";
-import type { Document } from "@/lib/types";
+import { useDebounce } from "../hooks/useDebounce";
+import type { Document } from "../lib/types";
 import { Tag, Trash2 } from "lucide-react";
-import { apiFetch } from "@/lib/api";
+import { apiFetch } from "../lib/api";
 
 interface Props {
   document: Document;
@@ -90,9 +90,21 @@ export function DocumentEditor({ document, onSaved }: Props) {
     onSaved,
   ]);
 
+  // Delete is wired straight to the DELETE endpoint, which
+  // checks `x-user-id` ownership before removing anything.
   const remove = async () => {
     if (!confirm(`Delete "${title || "Untitled"}"?`)) return;
-    await apiFetch(`/api/documents/${document.id}`, { method: "DELETE" });
+    const res = await apiFetch(`/api/documents/${document.id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      const message =
+        res.status === 404
+          ? "This page can no longer be found. It may already be deleted."
+          : "Failed to delete page. Please try again.";
+      alert(message);
+      return;
+    }
     window.dispatchEvent(new CustomEvent("documents:changed"));
   };
 

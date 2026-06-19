@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../../../../lib/prisma";
 
 type Ctx = { params: { id: string } };
 
-function getSessionId(req: NextRequest): string {
-  return req.headers.get("x-session-id") ?? "";
+function getUserId(req: NextRequest): string {
+  return req.headers.get("x-user-id") ?? "";
 }
 
-async function findOwnedDoc(id: string, sessionId: string) {
-  if (!sessionId) return null;
-  return prisma.document.findFirst({ where: { id, sessionId } });
+async function findOwnedDoc(id: string, userId: string) {
+  if (!userId) return null;
+  return prisma.document.findFirst({ where: { id, userId } });
 }
 
 export async function GET(req: NextRequest, { params }: Ctx) {
   try {
-    const sessionId = getSessionId(req);
-    const document = await findOwnedDoc(params.id, sessionId);
+    const userId = getUserId(req);
+    const document = await findOwnedDoc(params.id, userId);
     if (!document) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -31,8 +31,8 @@ export async function GET(req: NextRequest, { params }: Ctx) {
 
 export async function PATCH(req: NextRequest, { params }: Ctx) {
   try {
-    const sessionId = getSessionId(req);
-    const existing = await findOwnedDoc(params.id, sessionId);
+    const userId = getUserId(req);
+    const existing = await findOwnedDoc(params.id, userId);
     if (!existing) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -42,8 +42,10 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 
     if (typeof body.title === "string") data.title = body.title;
     if (typeof body.content === "string") data.content = body.content;
-    if (typeof body.isPublished === "boolean") data.isPublished = body.isPublished;
-    if (typeof body.isArchived === "boolean") data.isArchived = body.isArchived;
+    if (typeof body.isPublished === "boolean")
+      data.isPublished = body.isPublished;
+    if (typeof body.isArchived === "boolean")
+      data.isArchived = body.isArchived;
     if (body.parentDocumentId !== undefined) {
       data.parentDocumentId =
         typeof body.parentDocumentId === "string" &&
@@ -75,12 +77,17 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 
 export async function DELETE(req: NextRequest, { params }: Ctx) {
   try {
-    const sessionId = getSessionId(req);
-    const existing = await findOwnedDoc(params.id, sessionId);
+    const userId = getUserId(req);
+    const existing = await findOwnedDoc(params.id, userId);
     if (!existing) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
+    // Cascade: the self-relation in schema.prisma has
+    // `onDelete: Cascade` on `parentDocument`, so deleting a
+    // parent document will automatically remove all of its
+    // child documents at the database level. We do not need
+    // to manually walk the tree.
     await prisma.document.delete({
       where: { id: params.id },
     });
