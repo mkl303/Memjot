@@ -822,3 +822,43 @@
 +src/app/api/pages/route.ts
 +```typescript
 +// Clean, production-ready code here
+
+# 2026-06-19 19:14:52.626594
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++23-23d93914ef20105d.js:1 Error: Failed to fetch
++    at 449-6b57cbdbc66a7024.js:1:16221
++window.console.error @ 23-23d93914ef20105d.js:1
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++
+
+# 2026-06-19 19:14:52.626650
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++23-23d93914ef20105d.js:1 Error: Failed to fetch
++    at 449-6b57cbdbc66a7024.js:1:16221
++window.console.error @ 23-23d93914ef20105d.js:1
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++/api/documents:1  Failed to load resource: the server responded with a status of 500 ()
++
