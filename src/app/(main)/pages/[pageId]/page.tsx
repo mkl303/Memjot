@@ -1,4 +1,4 @@
-import { AppShell } from "@/components/AppShell";
+import { AppShell } from "../../../../components/AppShell";
 
 /**
  * Dynamic page route. AppShell reads `pageId` from the URL via
