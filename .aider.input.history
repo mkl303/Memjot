@@ -608,3 +608,33 @@
 +```prisma
 +// entire complete schema code here
 +DO NOT use elisions, placeholders, or comments like "// rest of the code remains the same". You must output the ENTIRE, complete, and functional code for the schema file.
+
+# 2026-06-19 18:43:43.078238
++Act as an Expert Full-Stack Architect. We have a Next.js build failure due to a TypeScript error in `src/app/api/documents/import/route.ts`.
++
++THE ERROR:
++"Type error: Object literal may only specify known properties, and 'sessionId' does not exist in type 'DocumentWhereInput'."
++
++THE FIX:
++We recently updated our Prisma schema to use `userId` instead of `sessionId` for data isolation. You need to update `src/app/api/documents/import/route.ts`. 
++1. Find where `sessionId` is being used in the Prisma queries (around line 75) and replace it with `userId`.
++2. Ensure the API route extracts the user's ID from the `x-user-id` header instead of the old session logic.
++3. Check the rest of this file for any other leftover `sessionId` references and update them to `userId`.
++
++CRITICAL FORMATTING RULE:
++You must output code strictly following Aider's file listing format. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code". Output the ENTIRE, complete, and functional code for `src/app/api/documents/import/route.ts`.
+
+# 2026-06-19 18:43:43.078319
++Act as an Expert Full-Stack Architect. We have a Next.js build failure due to a TypeScript error in `src/app/api/documents/import/route.ts`.
++
++THE ERROR:
++"Type error: Object literal may only specify known properties, and 'sessionId' does not exist in type 'DocumentWhereInput'."
++
++THE FIX:
++We recently updated our Prisma schema to use `userId` instead of `sessionId` for data isolation. You need to update `src/app/api/documents/import/route.ts`. 
++1. Find where `sessionId` is being used in the Prisma queries (around line 75) and replace it with `userId`.
++2. Ensure the API route extracts the user's ID from the `x-user-id` header instead of the old session logic.
++3. Check the rest of this file for any other leftover `sessionId` references and update them to `userId`.
++
++CRITICAL FORMATTING RULE:
++You must output code strictly following Aider's file listing format. Provide the exact file path on the line immediately preceding the triple backticks. DO NOT use elisions like "// rest of code". Output the ENTIRE, complete, and functional code for `src/app/api/documents/import/route.ts`.
