@@ -12,6 +12,7 @@ model Document {
   title            String     @default("Untitled")
   content          String     @default("")
   isPublished      Boolean    @default(false)
+  isArchived       Boolean    @default(false)
   category         String?
   sessionId        String?
   parentDocumentId String?

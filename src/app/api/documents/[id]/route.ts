@@ -43,6 +43,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     if (typeof body.title === "string") data.title = body.title;
     if (typeof body.content === "string") data.content = body.content;
     if (typeof body.isPublished === "boolean") data.isPublished = body.isPublished;
+    if (typeof body.isArchived === "boolean") data.isArchived = body.isArchived;
     if (body.parentDocumentId !== undefined) {
       data.parentDocumentId =
         typeof body.parentDocumentId === "string" &&

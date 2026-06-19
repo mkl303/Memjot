@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { DocumentEditor } from "./DocumentEditor";
 import { EmptyState } from "./EmptyState";
@@ -9,8 +10,12 @@ import { apiFetch } from "@/lib/api";
 import { getOrCreateSessionId } from "@/lib/session";
 
 export function AppShell() {
+  const params = useParams<{ pageId?: string }>();
+  const router = useRouter();
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(
+    params?.pageId ?? null
+  );
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [ready, setReady] = useState(false);
@@ -44,12 +49,27 @@ export function AppShell() {
     return () => window.removeEventListener("documents:changed", handler);
   }, [fetchDocuments]);
 
-  // If the currently selected doc disappears, clear the selection.
+  // Keep selectedId in sync with the URL so that deep-links,
+  // browser back/forward, and the "delete current page" path
+  // all stay consistent.
   useEffect(() => {
-    if (selectedId && !documents.some((d) => d.id === selectedId)) {
-      setSelectedId(null);
+    setSelectedId(params?.pageId ?? null);
+  }, [params?.pageId]);
+
+  // If the URL points at a page we can't resolve (deleted,
+  // archived, or just never existed), gracefully fall back to
+  // the home view. We only do this once data has actually
+  // loaded so we don't bounce the user on a cold start.
+  useEffect(() => {
+    if (
+      params?.pageId &&
+      !loading &&
+      documents.length > 0 &&
+      !documents.some((d) => d.id === params.pageId && !d.isArchived)
+    ) {
+      router.replace("/");
     }
-  }, [documents, selectedId]);
+  }, [documents, params?.pageId, loading, router]);
 
   const createDocument = useCallback(
     async (parentDocumentId: string | null = null) => {
@@ -61,11 +81,24 @@ export function AppShell() {
       const doc: Document = await res.json();
       await fetchDocuments();
       setSelectedId(doc.id);
+      router.push(`/pages/${doc.id}`);
     },
-    [fetchDocuments]
+    [fetchDocuments, router]
   );
 
-  const selected = documents.find((d) => d.id === selectedId) ?? null;
+  const handleSelect = useCallback(
+    (id: string) => {
+      setSelectedId(id);
+      router.push(`/pages/${id}`);
+    },
+    [router]
+  );
+
+  // Only consider non-archived pages for the "open" view.
+  // Archived pages stay in `documents` (so they round-trip
+  // through PATCH/restore) but are hidden from the editor.
+  const selected =
+    documents.find((d) => d.id === selectedId && !d.isArchived) ?? null;
 
   if (!ready) {
     return null;
@@ -76,7 +109,7 @@ export function AppShell() {
       <Sidebar
         documents={documents}
         selectedId={selectedId}
-        onSelect={setSelectedId}
+        onSelect={handleSelect}
         onCreate={createDocument}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen((v) => !v)}

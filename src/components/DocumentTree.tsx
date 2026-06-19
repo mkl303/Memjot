@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  Archive,
+  ArchiveRestore,
   ChevronDown,
   ChevronRight,
   FileText,
@@ -14,14 +16,43 @@ import type { DocumentNode, Document } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { apiFetch } from "@/lib/api";
 
+const STORAGE_KEY = "sidebar:expanded";
+const UNCATEGORIZED = "Uncategorized";
+
+/**
+ * Persist the open/closed state of each node to localStorage.
+ * We store explicit `+<id>` (open) and `-<id>` (closed) markers
+ * so that newly-added nodes default to open without us having
+ * to seed localStorage with a long list of "open" entries.
+ */
+function loadExpanded(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveExpanded(set: Set<string>) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set)));
+  } catch {
+    // Ignore quota / privacy-mode errors; persistence is a
+    // nice-to-have, not a hard requirement.
+  }
+}
+
 interface Props {
   documents: Document[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   onCreate: (parentId: string | null) => void;
 }
-
-const UNCATEGORIZED = "Uncategorized";
 
 export function DocumentTree(props: Props) {
   const tree = buildTree(props.documents);
@@ -75,9 +106,43 @@ interface NodeProps {
 }
 
 function TreeNode({ node, depth, selectedId, onSelect, onCreate }: NodeProps) {
+  // Default to open. After mount we hydrate from localStorage
+  // and honour the user's previous open/closed choice.
   const [open, setOpen] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const hasChildren = node.children.length > 0;
+
+  useEffect(() => {
+    const saved = loadExpanded();
+    // An explicit `-<id>` entry means "user collapsed this",
+    // which overrides the default of open.
+    if (saved.has(`-${node.id}`)) {
+      setOpen(false);
+    }
+    setHydrated(true);
+  }, [node.id]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const saved = loadExpanded();
+    if (open) {
+      saved.delete(`-${node.id}`);
+      saved.add(`+${node.id}`);
+    } else {
+      saved.delete(`+${node.id}`);
+      saved.add(`-${node.id}`);
+    }
+    saveExpanded(saved);
+    // We intentionally read & write the full set in one go so
+    // siblings don't trample each other.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, hydrated, node.id]);
+
+  const toggle = () => {
+    if (!hasChildren) return;
+    setOpen((v) => !v);
+  };
 
   const remove = async () => {
     if (!confirm(`Delete "${node.title || "Untitled"}"?`)) return;
@@ -86,17 +151,27 @@ function TreeNode({ node, depth, selectedId, onSelect, onCreate }: NodeProps) {
     window.dispatchEvent(new CustomEvent("documents:changed"));
   };
 
+  const toggleArchive = async () => {
+    setMenuOpen(false);
+    await apiFetch(`/api/documents/${node.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ isArchived: !node.isArchived }),
+    });
+    window.dispatchEvent(new CustomEvent("documents:changed"));
+  };
+
   return (
     <li>
       <div
         className={cn(
           "group relative flex items-center gap-1 rounded px-1 py-1 text-sm text-gray-700 hover:bg-gray-200",
-          selectedId === node.id && "bg-gray-200 font-medium text-gray-900"
+          selectedId === node.id && "bg-gray-200 font-medium text-gray-900",
+          node.isArchived && "opacity-60"
         )}
         style={{ paddingLeft: depth * 12 + 4 }}
       >
         <button
-          onClick={() => setOpen((v) => !v)}
+          onClick={toggle}
           className="flex h-4 w-4 items-center justify-center text-gray-500"
           aria-label={open ? "Collapse" : "Expand"}
         >
@@ -142,7 +217,7 @@ function TreeNode({ node, depth, selectedId, onSelect, onCreate }: NodeProps) {
             </button>
             {menuOpen && (
               <div
-                className="absolute right-0 z-20 mt-1 w-36 rounded-md border border-gray-200 bg-white py-1 text-xs shadow-lg"
+                className="absolute right-0 z-20 mt-1 w-40 rounded-md border border-gray-200 bg-white py-1 text-xs shadow-lg"
                 onMouseLeave={() => setMenuOpen(false)}
               >
                 <button
@@ -153,6 +228,20 @@ function TreeNode({ node, depth, selectedId, onSelect, onCreate }: NodeProps) {
                   className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-gray-700 hover:bg-gray-100"
                 >
                   <Plus className="h-3 w-3" /> Add sub-page
+                </button>
+                <button
+                  onClick={toggleArchive}
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-gray-700 hover:bg-gray-100"
+                >
+                  {node.isArchived ? (
+                    <>
+                      <ArchiveRestore className="h-3 w-3" /> Restore
+                    </>
+                  ) : (
+                    <>
+                      <Archive className="h-3 w-3" /> Archive
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={remove}

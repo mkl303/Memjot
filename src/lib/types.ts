@@ -3,6 +3,7 @@ export interface Document {
   title: string;
   content: string;
   isPublished: boolean;
+  isArchived: boolean;
   category: string | null;
   parentDocumentId: string | null;
   sessionId?: string;
